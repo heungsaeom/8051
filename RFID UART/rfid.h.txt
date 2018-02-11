@@ -1,0 +1,36 @@
+#ifndef __rfid_h__
+#define __rfid_h__
+
+//#define LINEF_TERMINATION 
+#define COUNT_TERMINATION
+
+
+#ifdef LINEF_TERMINATION
+#ifdef COUNT_TERMINATION
+#error "Both LINEF_TERMINATION and COUNT_TERMINATION are defined"
+#endif
+#endif
+
+#ifdef COUNT_TERMINATION
+#ifdef LINEF_TERMINATION
+#error "Both LINEF_TERMINATION and COUNT_TERMINATION are defined"
+#endif
+#endif
+
+
+#define RFID_FRAME_LENGTH 9
+
+#define RFID_DB_SIZE     10
+
+#ifdef  COUNT_TERMINATION
+#define RFID_CHAR_COUNT 9
+#endif
+
+
+extern unsigned char  checkSwipe(void);
+extern unsigned char  checkDatabase(void);
+extern          char* getName(void);
+extern          char* getTagNo(void);
+
+
+#endif

@@ -1,0 +1,15 @@
+sbit led=P3^0; //Khai bao chan gan led
+void INT_Timer1()interrupt 3 {
+          //ctr phuc vu ngat
+          led=!led; //Dao bit
+}
+void main(){//ctr chinh 
+          TMOD=0x20;//Sd Timer1 che do 8bit tu nap lai (ngat timer)
+          TH1=TL1=0x00;//Nap gia tri bat dau 8bit
+          TR1=1;//Khoi dong timer1
+          ET1=1;//Ngat timer1
+          EA=1;//Cho phep ngat
+          while(1){//vong lap vo tan
+                    //code ctr
+          }
+}

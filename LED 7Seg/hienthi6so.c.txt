@@ -1,0 +1,51 @@
+#include <REGX51.H>
+unsigned long int x=0;
+unsigned char so[]={0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90};
+unsigned char tramnghin,chucnghin,nghin,tram,chuc,donvi;
+void delay (void)
+ {
+   int i;
+   for (i=0;i<500;i++);
+ }
+void ngatngoai0 (void) interrupt 0
+ {
+   x++;
+   tramnghin=x/100000;
+   chucnghin=(x%100000)/10000;
+   nghin=((x%100000)%10000)/1000;
+   tram=(((x%1000000)%10000)%1000)/100;
+   chuc=((((x%100000)%10000)%1000)%100)/10;
+   donvi=((((x%100000)%10000)%1000)%100)%10; 
+   if (x>999999) 
+     { 
+    x=0;
+  }
+ }
+void main()
+ {
+   IE=0x81;
+   TCON=0x01;
+
+  while (1)
+    { 
+   
+   P0=so[donvi];
+   P2_7=0;delay();
+   P2_7=1;
+   P0=so[chuc];
+   P2_6=0;delay();
+   P2_6=1;
+   P0=so[tram];
+   P2_5=0;delay();
+   P2_5=1;
+   P0=so[nghin];
+   P2_4=0;delay();
+   P2_4=1;
+   P0=so[chucnghin];
+   P2_3=0;delay();
+   P2_3=1;
+   P0=so[tramnghin];
+   P2_2=0;delay();
+   P2_2=1;
+ }
+ }

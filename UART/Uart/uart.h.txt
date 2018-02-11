@@ -1,0 +1,9 @@
+#include <AT89X52.h>
+
+
+void InitUART(void);
+void UARTPutChar(unsigned char c);		 
+void Prints(unsigned char*s);			  
+void PrintLongInt(unsigned long num);     
+void PrintShortIntHex(unsigned int num);  
+void PrintHex(unsigned char c);		      

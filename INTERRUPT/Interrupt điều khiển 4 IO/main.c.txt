@@ -1,0 +1,52 @@
+
+#include<regx52.h>   
+void delay(unsigned int t)
+//ham delay
+{
+            unsigned int x,y;
+            for(x=0;x<t;x++)
+            {
+                        for(y=0;y<t;y++);
+            }
+}
+main()                                                
+//Chuong trình chính
+{
+            IE=0x84;
+                                    //khai bao ngat ngoai 1
+                                    IT1=1;
+                                    //khai bao ngat theo suon xuong
+                                    P2=0;
+                                    //cho LED mac dinh tat
+                                    while(1)                    
+            {
+                        PCON |=0x01;
+            //khai bao POWER SAVING MODE             
+}                  
+}
+void ngatngoai(void) interrupt 2         
+{
+            delay(20);
+            //chong doi phim
+            if(!P1_0)// Neu phim 1 duoc bam
+            {
+                        P2_0=!P2_0;
+                        while(!P1_0);
+            }
+            if(!P1_1)// Neu phim 2 duoc bam
+            {
+                        P2_1=!P2_1;
+                        while(!P1_1);
+            }
+            if(!P1_2)// Neu phim 3 duoc bam
+            {
+                        P2_2=!P2_2;
+                        while(!P1_2);
+            }
+            if(!P1_3)// Neu phim 4 duoc bam
+            {
+                        P2_3=!P2_3;
+                        while(!P1_3);
+            }
+
+}      

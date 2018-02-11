@@ -1,0 +1,35 @@
+#include "hc05.h"
+
+void HC05Begin(unsigned long osc,unsigned long baud)
+{
+Serialbegin(osc,baud);
+}
+
+void HC05Write(char c)
+{
+Serialwrite(c);
+}
+
+void HC05Print(char *ptr)
+{
+Serialprint(ptr);
+}
+
+unsigned char HC05Test(void)
+{
+return 0;
+}
+
+unsigned char HC05Read(void)
+{
+return Serialread();
+}
+
+unsigned char HC05Available(void)
+{
+return Serialavailable();
+}
+
+/*unsigned char* HC05GetVersion(void)
+{
+}*/

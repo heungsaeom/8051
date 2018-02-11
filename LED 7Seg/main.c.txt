@@ -1,0 +1,63 @@
+#include <REGX51.H>
+/* 
+Ctr quet nut nhan va quet LED 7
+Code by vuthai - SangTaoClub.Net
+*/
+#define DOUT P2 //Chan xuat data led 7
+#define D1 P3_0 //Quet LED so 1
+#define D2 P3_1 //Quet LED so 2
+#define D3 P3_2 //Quet LED so 3
+#define D4 P3_3 //Quet LED so 4
+#define UP P3_6 //Nut nhan UP
+#define DOWN P3_7 //Nut nhan DOWN
+unsigned char Mang[10]={0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90};//Mang LED 7
+char a,b;
+unsigned char dem;
+/////////////////////
+void delay(unsigned int t){ //Ham tao tre
+      unsigned int i,j;
+      for(i=0;i<t;i++)for(j=0;j<100;j++);
+}
+void quet_led(){//Ham quet 4 LED 7
+      D1=0; //Led so 1 sang
+      DOUT=Mang[a/10];//Xuat data gtri hang chuc cua bien a
+      delay(1);//Tao tre 
+      DOUT=0xff;//Ngat data (tat bong mo voi led don xep thanh led 7)
+      D1=1;D2=0; //Led so 1 tat, led 2 sang
+      DOUT=Mang[a%10];//Xuat data gtri hang don vi cua bien a
+      delay(1);
+      DOUT=0xff;
+      D2=1;D3=0; //Led so 2 tat, led 3 sang
+      DOUT=Mang[b/10];//Xuat data gtri hang chuc cua bien b
+      delay(1);
+      DOUT=0xff;
+      D3=1;D4=0; //Led so 3 tat, led 4 sang
+      DOUT=Mang[b%10];//Xuat data gtri hang don vi cua bien b
+      delay(1);
+      DOUT=0xff;
+      D4=1;//Tat Led so 4
+}
+void nut_nhan(){//Ham scan nut nhan
+      if(!UP){//Nut UP dc nhan
+            a++;//Tang gia tri
+            if(a>99)a=0;//Set ve 0 khi a>99
+            while(!UP);//Cho nha phim
+      }else if(!DOWN){//Nut DOWN dc nhan
+            a--;//Giam gia tri
+            if(a<0)a=99;//Set ve 99 khi a<0
+            while(!DOWN);//Cho nha phim
+      }
+}
+void main(){//Ctr chinh
+      delay(500);
+      while(1){//Vong lap ctr
+            nut_nhan();//Scan nut nhan
+            quet_led();//Scan LED 7
+            dem++;//Dem tu tang
+            if(dem>100){
+                  b++;//b tang
+                  dem=0;
+                  if(b>99)b=0;//Set lai gia tri
+            }
+      }
+}

@@ -1,0 +1,4 @@
+double Raw2Voltage(int __val)
+{
+return ADC_TO_VOLTAGE(__val);
+}

@@ -1,0 +1,13 @@
+sbit led=P3^0; //Khai bao chan gan led
+void INT0() interrupt 0 {
+          //ctr phuc vu ngat ngoai 0, nhan nut de bat led
+          led=1; //bat led
+}
+void main(){//ctr chinh 
+          led=0;//tat led 
+          EX0=1;//ngat ngoai 0
+          EA=1;//Cho phep ngat
+          while(1){//vong lap vo tan
+                    //code ctr
+          }
+}

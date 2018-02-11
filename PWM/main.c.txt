@@ -1,0 +1,37 @@
+#include 
+sbit out=P3^0;//Khai bao chan OUT
+sbit nut=P1^0;//Khai bao chan nut nhan
+unsigned char dem=0,ptram_xung,a;
+void int_timer() interrupt 1 {
+      //Ctr ngat timer0
+      //TR0=0;
+      TF0=0;
+      dem++;
+      if(dem
+            out=1;//out muc 1 theo % xung
+      }else{
+            out=0;
+      }
+      if(dem==100) dem=0;      
+}
+void main(){
+      TMOD=0x02;//Chon timer0, che do 8bit tu nap lai
+      TH0=TL0=0x9b;//Nap gia tri de chon tan so ra
+      ET0=1;//Ngat timer0
+      TR0=1;//Khoi dong timer0
+      EA=1;//Cho phep ngat
+      while(1){
+            if(!nut){//Nut nhan de set do rong xung
+                  a++;//tang gia tri
+                  if(a>5)a=0;//set ve mac dinh
+                  while(!nut);//Cho nha nut
+            }
+            if(a==0) ptram_xung=10;//xung ra 10% muc cao
+            else if(a==1) ptram_xung=25;//xung ra 25% muc cao
+            else if(a==2) ptram_xung=45;//xung ra 45% muc cao
+            else if(a==3) ptram_xung=60;//xung ra 60% muc cao
+            else if(a==4) ptram_xung=75;//xung ra 75% muc cao
+            else if(a==5) ptram_xung=90;//xung ra 90% muc cao
+      }
+
+}

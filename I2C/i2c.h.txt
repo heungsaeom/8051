@@ -1,0 +1,59 @@
+#ifndef __i2c_h__
+#define __i2c_h__
+
+
+#include <reg51.h>
+
+
+// Port Definitions
+#define SDADIR  P0             // SDA Direction Register
+#define SCLDIR  P0             // SCL Direction Register
+
+#define SDAPORT P0             // SDA Output Register
+#define SCLPORT P0             // SCL Output Register
+
+#define SDAPIN  P0             // SDA Input Register
+#define SCLPIN  P0             // SCL Input Register
+
+#define SDABIT 1 << 0         // SDA Bit Position
+#define SCLBIT 1 << 1         // SCL Bit Position
+
+#define SDA ( (SDAPIN ) & (SDABIT) ) // SDA
+#define SCL ( (SCLPIN ) & (SCLBIT) ) // SCL
+
+
+#define SDA_HIGH SDAPORT |= SDABIT
+#define SDA_LOW  SDAPORT &= ~SDABIT
+
+#define SCL_HIGH SCLPORT |= SCLBIT
+#define SCL_LOW  SCLPORT &= ~SCLBIT
+
+#define I2C_CLOCK_VAR                    100
+#define I2C_SCAN_TIMEOUT_COUNTER_VAL     50000
+
+#define i2cClock(val) i2cDelay(val)
+
+#define CLOCK_ERROR_CORRECTION 3
+
+/***************** Prototypes ******************************/
+extern unsigned char  i2cBegin(unsigned long,unsigned long);          // Osc Freq, Speed
+extern unsigned char  i2cDetect(unsigned char);                       // Device Address
+extern unsigned char  i2cavailable(void);
+
+extern void           i2cStart(void);
+extern void           i2cStop(void);
+
+extern void           i2cWritebyte(unsigned char);
+extern unsigned char  i2cReadbyte(unsigned char);
+
+extern void           i2cWrite(unsigned char,unsigned char);
+extern unsigned char  i2cRead(unsigned char);
+
+extern void           i2cWriteBlock(unsigned char,unsigned char,unsigned char*);
+extern void           i2cReadBlock(unsigned char,unsigned char,unsigned char*);
+
+extern void           i2csetAdd(unsigned char);
+extern unsigned char* i2cScan(unsigned char ,unsigned char);
+/***********************************************************/
+
+#endif

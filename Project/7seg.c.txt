@@ -1,0 +1,99 @@
+#include "at89x52.h"
+
+// khai bao ngat
+#define IE0_VECTOR 0
+#define IE1_VECTOR 2
+int flag = 0;
+
+// khai bao chan led
+#define led_port P2
+
+// chan anot cua 4 led 7 thanh
+sbit led1 = P1^0; 
+sbit led2 = P1^1;
+sbit led3 = P1^2;
+sbit led4 = P1^3;
+code unsigned char led7seg[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90}; // gia tri led 7 thanh
+
+void delay(unsigned int time){
+	while(time--);	
+}
+
+void display(int sohieuung){ //Hien thi led 7 thanh
+	led1 = 1;
+	led2 = 1;
+	led3 = 1;
+	led4 = 0;
+	P0 = led7seg[sohieuung+1];
+}
+
+// bit 0 : den sang
+// bit 1 : den tat
+
+void sangtatca() { /*-----Sang tat ca cac den-----*/
+	led_port = 0x00; // sang tat ca cac den
+	delay(50000);
+	led_port = 0xff; // tat tat ca cac den
+	delay(50000);
+}
+
+void dichsangphai(){ //---------Sang tu trai sang phai------------//
+	unsigned char led = 0x80;
+	unsigned char i;
+	for(i = 0; i < 8; i ++){
+		led_port = ~led;
+		delay(50000);
+		led = led>>1;
+	}
+}
+
+void dichsangtrai(){ //---------Sang tu phai sang trai-------------//
+	unsigned char led=0x01;
+	unsigned char i;
+	for(i = 0; i < 8; i ++){
+		led_port = ~led;
+		delay(50000);
+		led = led<<1;
+	}
+}
+
+void dichvaogiua(){ //----------------Sang hai ben-----------------//
+	unsigned char led[5] = {0xff, 0x7e, 0xbd, 0xdb, 0xe7}; // mang gia tri led truyen ra port P2 truong hop sang tu 2 ben vao
+	char i;
+	for (i = 0; i <5 ; i ++){ // dich tu 2 ben vao giua
+		led_port = led[i];
+		delay(50000);		
+	}
+	for (i = 4; i >= 0; i--){ // dich tu giua ra 2 ben
+		led_port = led[i];
+		delay(50000);
+	}
+}
+
+void hieuungtruoc() interrupt IE0_VECTOR { // chuyen ve hieu ung truoc
+	flag--;
+	if(flag < 0)
+		flag = 3;
+}
+
+void hieuungsau() interrupt IE1_VECTOR {  // chuyen sang hieu ung ke tiep
+	flag++;
+	flag = flag%4;
+}
+
+void main(){
+	IT0 = IT1 = 1; // ngat theo suon
+	EX0 = EX1 = 1; // cho phep ngat ngoai tai 0 va 1
+	EA = 1; // cho phep ngat
+	while(1){
+		if(flag == 0)
+			sangtatca();
+		else if (flag == 1)
+			dichsangphai();
+		else if (flag == 2)
+			dichsangtrai();
+		else if (flag == 3)
+			dichvaogiua();
+		display(flag);
+	}
+}

@@ -1,0 +1,61 @@
+#include "at89x52.h"
+#define TF0_VECTOR 1 // Timer 0
+
+// chan anot cua 4 led 7 thanh
+sbit led1 = P1^0; 
+sbit led2 = P1^1;
+sbit led3 = P1^2;
+sbit led4 = P1^3;
+
+// gia tri led 7 thanh
+code unsigned char led7segvalue[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};
+
+int numb = 0; // so hien thi ra led 7 seg
+int count = 0;
+
+void delay(unsigned int time){
+	while(time--);
+}
+
+void timer0_interrupt() interrupt TF0_VECTOR {
+	count ++;
+	if(count == 20){
+		count = 0;
+		numb ++;
+	}
+	if(numb == 100){
+		numb = 0;
+	}
+}
+
+void display(unsigned int numb){
+	led1 = led2 = led4 = 1;
+	led3 = 0;
+	P0 = 0xff;
+	P0 = led7segvalue[numb / 10];
+	delay(100);
+
+	led1 = led2 = led3 = 1;
+	led4 = 0;
+	P0 = 0xff;
+	P0 = led7segvalue[numb % 10];
+	delay(100);
+}
+						  	
+void delay_hardware_50ms(){
+	TMOD = 0x01; // khoi tao timer 0 
+	ET0 = 1; // khong phat sinh ngat
+	TH0 = 0x3c; // thiet lap tre 50ms
+	TL0 = 0xb0;
+	TF0 = 0; // kiem tra co tran TF0 o muc 0
+	TR0 = 1; // khoi dong timer 0
+	while(TF0 == 0);
+}
+
+void main(){
+	EA = 1; // Cho phep ngat 
+	delay_hardware_50ms();
+	while(1){
+		display(numb);
+	}
+}

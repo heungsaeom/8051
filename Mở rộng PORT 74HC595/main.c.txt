@@ -1,0 +1,40 @@
+#include <REGX51.H>
+sbit CLK = P2^0; //Chan 11 clock
+sbit SDI = P2^1; //Chan 14 data
+sbit STR = P2^2; //Chan 12 chot
+void delay(unsigned char time){
+//Chuong trinh tao tre 50ms
+        unsigned char t;
+        for(t=0;t<time;t++){
+                TMOD=0x01; 
+                TH0=0x3c;
+                TL0=0xb0;
+                TR0=1;
+                while(!TF0); 
+                TF0=TR0=0;
+        }
+}
+void truyen(unsigned char b1, unsigned char b2, unsigned char b3){
+/*Chuong trinh truyen du lieu vao 3 IC 74HC595 
+Cac ban co the mo rong them bao nhieu IC tuy thich
+bang cach them code theo mau cua chuong trinh goc
+*/
+        unsigned char i,Q;
+        Q=b3; for(i=0;i<8;i++){SDI=Q&0x80;CLK=0;CLK=1;Q<<=1;} //ic 3
+        Q=b2; for(i=0;i<8;i++){SDI=Q&0x80;CLK=0;CLK=1;Q<<=1;} //ic 2
+        Q=b1; for(i=0;i<8;i++){SDI=Q&0x80;CLK=0;CLK=1;Q<<=1;} //ic 1
+        STR=0; STR=1; //Chot hien thi du lieu
+}
+
+void main(){ //ctr chinh
+        unsigned int i;
+        unsigned char ma[10]={0x00,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x00};
+        while(1){
+                for(i=0;i<10;i++){
+                        truyen(0xff,ma[i],ma[9-i]); //Truyen du lieu vao IC 
+                        delay(5);
+                        truyen(0x00,ma[i-1],ma[9-i]); 
+                        delay(5);
+                }
+        }
+}

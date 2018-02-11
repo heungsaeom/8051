@@ -1,0 +1,107 @@
+#include "UART.h"
+
+
+volatile bit Sending;  
+code char HexTable[] = {'0','1','2','3','4','5','6','7',
+                        '8','9','a','b','c','d','e','f'};
+
+void InitUART(void)
+{
+	//baud rate = 2400
+	TMOD &= 0x0f;    //Timer/Counter Mode Control register4bit
+	TMOD |= 0x20;   
+	TH1 = 0xf3;      //timer1
+	TL1 = 0xf3;
+	TR1 = 1;         //timer1
+
+	
+	SCON = 0X70;     
+	RI = 0;          //Receive Interrupt flag = 0
+	TI = 0;          //Transmit Interrupt flag = 0
+	EA = 1;          //enable all interrupt
+	ES = 1;          //enable ther serial port interrupt
+}
+
+
+
+void UARTPutChar(unsigned char c)	 
+{
+	Sending = 1;			         
+	SBUF = c;			             
+	while(Sending);				     
+}
+
+void Prints(unsigned char*s)	    
+{
+	int i;
+	for(i=0;;i++)
+	{
+		if(s[i] == '\0')
+			return;
+		UARTPutChar(s[i]);
+	}
+}
+
+void PrintShortIntHex(unsigned int num) 
+{
+	int i;
+	Prints("0x");
+	for(i=3;i>=0;i--)
+	{
+		UARTPutChar(HexTable[(num>>(4*i))&0xf]);
+	}
+}
+
+void PrintLongInt(unsigned long num)    
+{
+	int i,len;
+	char str[10],tmp;
+	if(num == 0)
+		Prints("0");
+	else
+	{
+		for(i=0;i<10;i++)
+		{
+			if(num == 0)
+			{
+				str[i] = '\0';
+				len = i; 
+				break;
+			}
+			str[i] = '0'+ (num%10);
+			num /= 10;
+		}
+      
+		for(i=0;i<len/2;i++)
+		{
+			tmp = str[i];
+			str[i] = str[len - 1 - i];
+			str[len - 1 - i] = tmp;
+		}
+		Prints(str);
+	}
+
+}
+
+void PrintHex(unsigned char c)		   
+{
+	int i;
+	Prints("0x");
+	for(i=1;i>=0;i--)
+	{
+		UARTPutChar(HexTable[(c>>(4*i))&0xf]);
+	}
+}
+
+void UART_ISR(void) interrupt 4	 //serial port interrupt
+{
+	if(RI)
+	{
+		RI = 0;      
+	}
+	else
+	{
+		Sending = 0;  
+		TI = 0;		 
+	}				  
+}

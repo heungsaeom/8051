@@ -1,0 +1,54 @@
+/***************Dia chi giao tiep DS1307*********************/
+#define DS1307_SEC      0x00 //Giay
+#define DS1307_MIN       0x01 //Phut
+#define DS1307_HOUR     0x02 //Gio
+#define DS1307_DAY        0x03 //Thu
+#define DS1307_DATE      0x04 //Ngay
+#define DS1307_MONTH    0x05 //Thang
+#define DS1307_YEAR       0x06 //Nam
+
+void DS1307_Write(unsigned char addr,unsigned char dat){
+          unsigned int temp;
+          temp = dat ; /*HEX to BCD*/
+          dat = (((dat/10)*16)|(temp %10)); /*for Led 7seg*/
+          I2C_time_start(); /* time_start i2c bus */
+          I2C_write(0XD0); /* Connect to DS1307 */
+          I2C_write(addr); /* Requetime_5 RAM address on DS1307 */
+          I2C_write(dat); 
+          I2C_time_stop();
+}
+unsigned char DS1307_Read(unsigned char addr){
+          unsigned int tm,ret;
+          I2C_time_start(); /* time_start i2c bus */
+          I2C_write(0xD0); /* Connect to DS1307 */
+          I2C_write(addr); /* Requetime_5 RAM address on DS1307 */
+          I2C_time_start(); /* time_start i2c bus */
+          I2C_write(0XD1); /* Connect to DS1307 for Read */
+          ret = I2C_read(); /* Receive data */
+          I2C_time_stop();
+          tm = ret; /*BCD to HEX*/
+          ret = (((ret/16)*10)+ (tm & 0x0f)); /*for Led 7seg*/
+          return ret;
+}
+void DS1307_Set(){
+          //Ghi du lieu ngay gio vao DS1307
+          DS1307_Write(DS1307_SEC,sec);
+          DS1307_Write(DS1307_MIN,min); 
+          DS1307_Write(DS1307_HOUR,hour); 
+          DS1307_Write(DS1307_DATE,day); 
+          DS1307_Write(DS1307_MONTH,month); 
+          DS1307_Write(DS1307_YEAR,year); 
+}
+void DS1307_GetTime(){
+          //Doc du lieu gio tu DS1307
+          hour=DS1307_Read(DS1307_HOUR);
+          min=DS1307_Read(DS1307_MIN);
+          sec=DS1307_Read(DS1307_SEC);
+}
+void DS1307_GetDate(){
+          //Doc du lieu ngay tu DS1307
+          day=DS1307_Read(DS1307_DATE);
+          month=DS1307_Read(DS1307_MONTH);
+          year=DS1307_Read(DS1307_YEAR);
+}//End code DS1307
+

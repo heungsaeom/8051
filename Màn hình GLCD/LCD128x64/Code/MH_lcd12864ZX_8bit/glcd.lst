@@ -1,0 +1,205 @@
+C51 COMPILER V9.01   GLCD                                                                  08/14/2012 04:22:53 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE GLCD
+OBJECT MODULE PLACED IN glcd.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE GLCD\glcd.c BROWSE DEBUG OBJECTEXTEND PRINT(.\glcd.lst) TABS(2) OBJECT(glcd
+                    -.obj)
+
+line level    source
+
+   1          /*******************************************************************
+   2            * @file     glcd.c
+   3            * @author   MinhHaGroup
+   4            * @version  V1.0.0
+   5            * @date   
+   6            * @brief    File cac ham de dieu khien LCD 128x64
+   7          ********************************************************************/
+   8          #include "main.h"
+   9          
+  10          
+  11          void write_data_lcd(unsigned char WDLCD)
+  12          {
+  13   1        delay_us(200);            // LUU Y SU CAN THIET CUA KHOANG THOI GIAN DELAY NAY 
+  14   1        LCD_RS = 1;
+  15   1        LCD_RW = 0;
+  16   1        LCD_Data = WDLCD;
+  17   1        LCD_E = 1;
+  18   1        LCD_E = 1;
+  19   1        LCD_E = 1;
+  20   1        LCD_E = 0;
+  21   1      }
+  22          // ==============================================================================
+  23          void write_command_lcd(unsigned char WCLCD,unsigned char BuysC) 
+  24          {
+  25   1        if (BuysC) 
+  26   1        delay_us(200);            // LUU Y SU CAN THIET CUA KHOANG THOI GIAN DELAY NAY 
+  27   1        LCD_RS = 0;
+  28   1        LCD_RW = 0; 
+  29   1        LCD_Data = WCLCD;
+  30   1        LCD_E = 1; 
+  31   1        LCD_E = 1;
+  32   1        LCD_E = 1;
+  33   1        LCD_E = 0;  
+  34   1      }
+  35          // ==============================================================================
+  36          // HAM KHOI TAO LCD ------------------------------------------------
+  37          // MODE 8 bit ------------------------------------------------------
+  38          void lcd_init(void) 
+  39          {
+  40   1        // Function set
+  41   1        write_command_lcd(0x30,1);          // Chon che do truyen 8 bit
+  42   1        delay_us(150);                      // delay > 100us
+  43   1        write_command_lcd(0x30,1);          // Chon che do truyen 8 bit
+  44   1        delay_us(50);                       // delay > 37us
+  45   1        
+  46   1        // Display ON/OFF control
+  47   1        write_command_lcd(0x0C,1);          // Cho phep hien thi ra LCD 128x64
+  48   1        delay_us(120);                      // delay > 100us
+  49   1        
+  50   1        // Clear LCD
+  51   1        write_command_lcd(0x01,1);          // Xoa man hinh     
+  52   1        delay_ms(40);                       // delay > 10ms
+  53   1        
+  54   1        // Entry mode set
+C51 COMPILER V9.01   GLCD                                                                  08/14/2012 04:22:53 PAGE 2   
+
+  55   1        write_command_lcd(0x06,1);          // Chon che do hien thi ki tu ra man hinh LCD 128x64 (Ki tu sau xuat hien
+             - ben phai ki tu truoc)
+  56   1      }
+  57          // ==============================================================================
+  58          void lcd_clear(void) 
+  59          {
+  60   1        write_command_lcd(0x01,1);
+  61   1        //write_command_lcd(0x34,1); 
+  62   1        write_command_lcd(0x30,1); 
+  63   1      }
+  64          // ==============================================================================
+  65          void lcd_flash(void)  
+  66          {
+  67   1        write_command_lcd(0x08,1);
+  68   1        delay_ms(400);
+  69   1        write_command_lcd(0x0c,1); 
+  70   1        delay_ms(400);
+  71   1        write_command_lcd(0x08,1); 
+  72   1        delay_ms(400);
+  73   1        write_command_lcd(0x0c,1); 
+  74   1        delay_ms(400);
+  75   1        write_command_lcd(0x08,1); 
+  76   1        delay_ms(400);
+  77   1      }
+  78          // ==============================================================================
+  79          void lcd_putchar(unsigned char X, unsigned char Y, unsigned char DData)
+  80          {
+  81   1        if(Y<1)
+  82   1          Y=1;
+  83   1        if(Y>4)
+  84   1          Y=4;
+  85   1        X &= 0x0F; 
+  86   1        switch(Y)
+  87   1        {
+  88   2          case 1:X|=0X80;break;
+  89   2          case 2:X|=0X90;break;
+  90   2          case 3:X|=0X88;break;
+  91   2          case 4:X|=0X98;break;
+  92   2        }
+  93   1        write_command_lcd(X, 0); 
+  94   1        write_data_lcd(DData);
+  95   1      }
+  96          // ==============================================================================
+  97          void lcd_puts(unsigned char X, unsigned char Y, unsigned char *DData)
+  98          {
+  99   1        unsigned char ListLength,X2;
+ 100   1      
+ 101   1        ListLength = 0;
+ 102   1        X2=X;
+ 103   1        if(Y<1)
+ 104   1          Y=1;
+ 105   1        if(Y>4)
+ 106   1          Y=4;
+ 107   1        X &= 0x0F; 
+ 108   1        switch(Y)
+ 109   1        {
+ 110   2          case 1:X2|=0X80;break;  
+ 111   2          case 2:X2|=0X90;break;
+ 112   2          case 3:X2|=0X88;break;
+ 113   2          case 4:X2|=0X98;break;
+ 114   2        }
+ 115   1        write_command_lcd(X2, 1); 
+C51 COMPILER V9.01   GLCD                                                                  08/14/2012 04:22:53 PAGE 3   
+
+ 116   1        while (DData[ListLength]>=0x20) 
+ 117   1        {
+ 118   2          if (X <= 0x0F) 
+ 119   2          {
+ 120   3            write_data_lcd(DData[ListLength]);
+ 121   3            ListLength++;
+ 122   3            X++;
+ 123   3            delay_ms(5);
+ 124   3          }
+ 125   2        }
+ 126   1      }
+ 127          // ==============================================================================
+ 128          void lcd_display_image  (unsigned char *DData)
+ 129          {
+ 130   1        unsigned char x,y,i;
+ 131   1        unsigned int tmp=0;
+ 132   1        for(i=0;i<9;)
+ 133   1        {   
+ 134   2          for(x=0;x<32;x++)
+ 135   2          {       
+ 136   3            write_command_lcd(0x34,1);
+ 137   3            write_command_lcd((0x80+x),1);
+ 138   3            write_command_lcd((0x80+i),1);  
+ 139   3            write_command_lcd(0x30,1);    
+ 140   3            for(y=0;y<16;y++) 
+ 141   3              write_data_lcd(DData[tmp+y]);
+ 142   3            tmp+=16;    
+ 143   3          }
+ 144   2          i+=8;
+ 145   2        }
+ 146   1          write_command_lcd(0x36,1);  
+ 147   1          write_command_lcd(0x30,1);
+ 148   1      }
+ 149          // ==============================================================================
+ 150          /**
+ 151          unsigned char read_data_lcd(void)
+ 152          {
+ 153            LCD_RS = 1; 
+ 154            LCD_RW = 1;
+ 155            LCD_E = 0;
+ 156            LCD_E = 0;
+ 157            LCD_E = 1;
+ 158            return(LCD_Data);
+ 159          }
+ 160          **
+ 161          
+ 162          unsigned char read_status_lcd (void)
+ 163          {
+ 164            write_data_port(0xFF); 
+ 165            LCD_RS = 0;
+ 166            LCD_RW = 1; 
+ 167            LCD_E = 1;
+ 168            while (LCD_Data & BUSY); 
+ 169            LCD_E = 0;
+ 170            return(LCD_Data);
+ 171          }*/
+ 172          // ==============================================================================
+ 173          /* -----------------END OF FILE---------------------------- */
+ 174          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.01   GLCD                                                                  08/14/2012 04:22:53 PAGE 4   
+
+   CODE SIZE        =    507    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

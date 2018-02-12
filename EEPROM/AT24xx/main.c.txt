@@ -1,0 +1,22 @@
+#include "eeprom.h"
+
+/* start the main program */
+int main() 
+{
+    unsigned char eeprom_address = 0x00, write_char = 'X', read_char;
+
+    UART_Init(9600);
+	  EEPROM_Init(AT24C16);
+
+    for(write_char='A';write_char<='Z';write_char++)
+    {
+        EEPROM_WriteByte(eeprom_address, write_char); // Write the data at memoryLocation	0x00
+
+
+        read_char = EEPROM_ReadByte(eeprom_address);  // Read the data from memoryLocation 0x00
+    }
+    
+    while (1);
+
+    return 0;
+}

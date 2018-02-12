@@ -1,0 +1,24 @@
+#include <reg51.h>
+#include "stdutils.h"
+#include "nec_ir.h"
+
+sbit RELAY_PIN = P0^0;
+
+void main()
+{
+    uint32_t key;
+	RELAY_PIN = 0;	  // Turn OFF the relay during Init
+    IR_RemoteInit();  // Initialtile the INTO and Timer0 for decoding the IR pulses
+
+    while(1)
+    {
+        key = IR_RemoteGetKey();  // Read the key press, it returns key code if key press is detected, else it returns 0
+
+        switch(key)
+        {
+        case IR_CODE_1: RELAY_PIN = 1; break; /* Turn On Relay(Bulb) if 1 is pressed*/
+        case IR_CODE_0: RELAY_PIN = 0; break; /* Turn OFF Relay(Bulb) if 0 is pressed*/
+        default: break;
+        }
+    }		
+}	  

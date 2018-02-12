@@ -1,0 +1,5 @@
+"main.obj",
+"glcd.obj",
+"delay.obj" 
+TO "main" 
+RAMSIZE(256) 

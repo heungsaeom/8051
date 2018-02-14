@@ -1,0 +1,37 @@
+#include <string.h>
+void delay(unsigned int t){//Ctr delay 50ms dung timer0
+        unsigned int i;
+        for(i=0;i<t;i++){ 
+                TH0=0x3c; //-50000us
+                TL0=0xb0;
+                TR0=1;
+                while(!TF0); //cho timer0 tran
+        TF0=TR0=0;
+        }
+}
+void uart_init()
+{
+	  TMOD=0x21; //Timer 1 che do 8bit nap lai tu dong, timer0 cho delay che do 16bit
+      SCON=0x50;//01010000 che do 1, cho phep nhan
+      TH1=TL1=0xFD;//Nap 253 tao baud 9600 ko nhan doi baud
+      TR1=1; //khoi dong timer1
+      ES=1; //Ngat UART
+      EA=1; //Cho phep ngat
+      delay(20);
+}
+void send(unsigned char *s){//Ham gui chuoi ki tu qua UART
+        unsigned char n,i;
+        n=strlen(s); //Dem xem co bao nhieu ky tu
+        for(i=0;i<n;i++){//Vong lap gui tung ky tu 1
+                SBUF=s[i];//Gui 1 byte
+                while(!TI); TI=0;//xoa co truyen
+        }
+}
+void ngat_uart()interrupt 4 //Ngat nhan du lieu tu uart 
+{ 
+        if(RI){ 
+                P1=SBUF; //Xuat du lieu ra Post 1
+        }
+         RI = 0; //Xoa co nhan
+
+}

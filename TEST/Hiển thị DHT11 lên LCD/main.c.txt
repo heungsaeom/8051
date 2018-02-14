@@ -1,0 +1,23 @@
+#include <REGX51.H>
+#include "lcd.c"
+#include "dht.c"
+/******************Ctr chinh**************************/
+void main(){ 
+        LCD_Init();//Khoi tao LCD
+        delay_ms(100);
+		LCD_Clear();//Xoa man hinh
+		LCD_Gotoxy(2,0);//Tro toi vi tri
+        LCD_Puts("Elnino DHT11");//Gui chuoi len LCD
+        delay_ms(100);
+	   	LCD_Gotoxy(0,1);
+		LCD_Puts(" T=00*C   H=00%  ");
+        while(1)
+		{
+			  LCD_Gotoxy(3,1);
+			  LCD_PutNum(hienthinhietdo());
+			  LCD_Gotoxy(12,1);
+			  LCD_PutNum(hienthidoam());
+			  delay_ms(1000);
+		}
+}
+//THE END

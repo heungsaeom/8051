@@ -1,0 +1,14 @@
+#include <REGX51.H>
+#include "dht.c"
+sbit DHT11=P3^2;	
+/******************Ctr chinh**************************/
+void main(){ 
+
+	hienthinhietdo();
+	hienthidoam();
+        while(1)
+		{
+
+		}
+}
+//THE END

@@ -1,0 +1,24 @@
+#include <REGX51.H>
+#include "lcd.c"
+#include "uart.c"
+/******************Ctr chinh**************************/
+void main(){ 
+        LCD_Init();//Khoi tao LCD
+		uart_init();
+        delay_ms(100);
+        LCD_Puts("Elnino LCD");//Gui chuoi len LCD
+        delay_ms(1000);
+        LCD_Clear();//Xoa man hinh
+        LCD_Gotoxy(0,0);//Tro toi vi tri
+        LCD_Puts("Test LCD.......");
+        delay_ms(2000);
+        LCD_Gotoxy(0,1);//Tro toi vi tri
+        LCD_Puts("OK!!!!");
+		
+        while(1)
+		{
+			send("Elnino IOT");
+			delay_ms(1000);
+		}
+}
+//THE END

@@ -1,0 +1,54 @@
+#include <REGX51.H>
+#include "ds18b20.c"
+sbit CLK = P1^0; //Chan 11 clock
+sbit SDI = P1^2; //Chan 14 data
+sbit STR = P1^1; //Chan 12 chot
+sbit t1 = P1^3;
+sbit t2 = P1^4;
+
+unsigned char digit[10] = {0x40,0x79,0x24,0x30,0x19,0x12,0x02,0x78,0x00,0x10};
+int t=0;
+int temp1=0;
+int temp2=0;
+//void truyen(unsigned char b1, unsigned char b2)
+void truyen(unsigned char b1)
+{
+        unsigned char i,Q;
+    //    Q=b2; for(i=0;i<8;i++){SDI=Q&0x80;CLK=0;CLK=1;Q<<=1;} //ic 2
+        Q=b1; for(i=0;i<8;i++){SDI=Q&0x80;CLK=0;CLK=1;Q<<=1;} //ic 1
+        STR=0; STR=1; //Chot hien thi du lieu
+}
+/******************Ctr chinh**************************/
+void msdelay(unsigned int itime)
+{
+	 unsigned int j,k;
+	for(j=0;j<itime;j++)
+	for(k=0;k<1275;k++);
+}
+
+
+void main(){ 
+
+		Init_18B20();
+        while(1)
+		{
+		ReadTemperature();
+		temp1=temp/10;
+		temp2=temp%10;
+		for(t=0;t<25;t++)
+			{
+
+				t1=1;
+				truyen(digit[temp1]);
+				msdelay(1);
+				t1=0;
+
+				t2=1;
+				truyen(digit[temp2]);
+				msdelay(1);
+				t2=0;
+			}
+
+		}
+}
+//THE END

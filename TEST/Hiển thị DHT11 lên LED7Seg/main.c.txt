@@ -1,0 +1,39 @@
+#include <REGX51.H>
+#include "lcd.c"
+#include "dht.c"
+sbit sl1 = P3^3;
+sbit sl2 = P3^4;
+unsigned char digit[10] = {0x40,0x79,0x24,0x30,0x19,0x12,0x02,0x78,0x00,0x10};
+int t=0;
+/******************Ctr chinh**************************/
+void msdelay(unsigned int itime)
+{
+	 unsigned int j,k;
+	for(j=0;j<itime;j++)
+	for(k=0;k<1275;k++);
+}
+void hienthi2so(unsigned int number)
+{
+	for(t=0;t<25;t++)
+	{
+		sl1=1;
+		P1=digit[number/10];
+		msdelay(1);
+		sl1=0;
+
+		sl2=1;
+		P1=digit[number%10];
+		msdelay(1);
+		sl2=0;
+	}
+}
+
+void main(){ 
+
+        while(1)
+		{
+			  hienthi2so(hienthinhietdo());
+
+		}
+}
+//THE END

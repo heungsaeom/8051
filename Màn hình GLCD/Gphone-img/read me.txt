@@ -1,0 +1,82 @@
+﻿Chào các bác, hôm nay mình sẽ hướng dẫn
+m.n cách hiện hình ảnh gấu lên màn hình
+LCD gphone độ phần giải 128x64px
+
+- Các công cụ cần có là
+ 1 : photoshop
+ 2 : trình biên dịch Keil C
+ 3 : Proteus 8.5
+
+Đầu tiên sẽ chỉnh phần ảnh nhé ! 
+Kiếm ảnh gấu đã :P
+OK giờ mở ảnh lên bằng photoshop
+
+B1: Crop ảnh, bỏ bớt phần thừa
+(áng áng kiểu như 128x64 vậy)
+Chọn công cụ crop. OK ấn enter 
+
+Giờ đưa ảnh về chuẩn kích cỡ 128x62 nhé
+Vào image ---> image size 
+Nó sẽ hiện ra 1 cái bảng. các bạn
+nhập thông số 128x64 vào
+Chú ý: Cái mắt xích bên cạnh, nếu có
+hiện 2 cái gạch thì ấn vào để tắt nó đi nhé !
+VÍ dụ : đó, có 2 cái gạch đó thì ấn
+vào các mắt xích kia để tắt nó đi thì
+mới nhập 128x64 đc.
+OK. Giờ ấn Ctrl + Shift + U để
+đưa ảnh về đen trắng.
+GIờ phải đưa ảnh về dạng mono .
+Các bạn ấn tổ hợp Ctrl + L
+
+Giờ chỉnh như mình nhé, cứ chỉnh sao
+cho ảnh nhìn ổn nhất là đc
+
+Thôi tạm thế đi :v
+
+Giờ lưu ảnh lại ở đuôi JPG.
+à ấn OK cái đã
+OK lưu xong tắt pts đi
+
+Giờ mở ảnh lên bằng pain rồi lưu lại dưới
+dạng mono bitmap nhé !
+
+Thế là xử lí xong phần ảnh. Giờ mở
+phần mềm để chuyển cái ảnh đó thành mã
+code
+đó tên nó là PCtoLCD2002
+
+ấn vào cái răng cưa và setup y như mình nhé !
+
+Giờ mở ảnh lên. ảnh đã được mở lên rồi
+đó. giờ ấn cái ???? để dịch sang hex
+
+Những cái mã {0x00,....} đó là mã được 
+dịch, giờ copy nó.
+
+OK. đã có mã. giờ mở code lên
+
+Lúc mở lên thì code sẽ như thế này ! Các bạn kéo
+đến dòng số 026. Dán cái mã nãy mình
+đã copy vào
+
+Sau đó ấn f7 để biên dịch ra file hex
+nạp chíp
+
+0 lỗi 0 cảnh báo là OK !
+Vậy là xong rồi đó, đã có file code
+nạp vào chíp là test thử thôi :P
+
+ở đây mình sẽ test trên phần mềm mô phỏng nhé !
+
+Phần cứng thì có thể dùng luôn bản
+Clock Gphone hôm trước mình đã làm video
+rồi !
+
+OK nha chúc các bạn thành công và không
+bị gấu đá :v
+
+
+
+
+
